@@ -12,8 +12,6 @@ const timeout = function (s) {
   });
 };
 
-console.log('first');
-
 // https://forkify-api.herokuapp.com/v2
 
 ///////////////////////////////////////
@@ -32,11 +30,22 @@ const showRecipe = async function () {
   try {
     const recipeContainer = document.querySelector('.recipe');
     // Loading recipe
-    // Remove the recipeContainer ineerHtml (The "Start by searching for a recipe or an ingredient. Have fun!" message") and put loading icon instead.
+
+    const id = window.location.hash.slice(1);
+    console.log(id);
+    // If there is no hash id
+    if (!id) return;
+
+    // Remove the recipeContainer innerHTML (previous content)
     recipeContainer.innerHTML = '';
+
+    // Render the spinner while the recipe is being fetched
     renderSpinner(recipeContainer);
+
+    console.log('first');
+    // Else start loading the recipe
     const response = await fetch(
-      'https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bcb34'
+      `https://forkify-api.herokuapp.com/api/v2/recipes/${id}`
     );
     const data = await response.json();
     // Throw an error in case of trying to fetch to unvalid url
@@ -172,10 +181,11 @@ const showRecipe = async function () {
       </div>
       `;
     // Insert the recipe content markup
-    recipeContainer.insertAdjacentHTML('afterbegin', markup);
+    recipeContainer.innerHTML = markup;
   } catch (err) {
     alert(err);
   }
 };
 
-showRecipe();
+// Listen to both load and hashchange and showrecipe when event occur
+['haschange', 'load'].forEach(ev => window.addEventListener(ev, showRecipe()));
