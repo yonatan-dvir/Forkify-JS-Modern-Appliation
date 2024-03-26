@@ -17,6 +17,7 @@ const controlRecipes = async function () {
     // Render the spinner while the recipe is being fetched
     recipeView.renderSpinner();
 
+    console.log(id);
     // Else start loading the recipe
     await model.loadRecipe(id);
 
@@ -25,11 +26,13 @@ const controlRecipes = async function () {
 
     //Rendering recipe
   } catch (err) {
+    console.log(err);
     alert(err);
   }
 };
 
-// Listen to both load and hashchange and call controlRecipes when one of them occurs
-['hashchange', 'load'].forEach(ev =>
-  window.addEventListener(ev, controlRecipes)
-);
+const init = function () {
+  recipeView.addHandlerRender(controlRecipes);
+};
+
+init();
