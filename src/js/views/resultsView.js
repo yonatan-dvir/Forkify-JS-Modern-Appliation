@@ -6,7 +6,7 @@ class ResultsView extends View {
   _errorMessage = 'No recipes found for your query! Please try again 😃';
   _message = '';
 
-  // Generate an html element of the recipe content
+  // Generate an html element of the results
   _generateMarkup() {
     return this._data
       .map(result => this._generateMarkupResult(result))
