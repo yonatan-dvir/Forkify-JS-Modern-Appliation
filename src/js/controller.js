@@ -12,13 +12,15 @@ const controlRecipes = async function () {
   try {
     // Retrieve the current hash id
     const id = window.location.hash.slice(1);
-    console.log(id);
 
     // If there is no hash id
     if (!id) return;
 
     // Render the spinner while the recipe is being fetched
     recipeView.renderSpinner();
+
+    // Update the results view to mark selected result
+    resultsView.update(model.getSearchResultsPage(1));
 
     // Loading the recipe
     await model.loadRecipe(id);
@@ -69,7 +71,7 @@ const controlServings = function (currentServings) {
   // Update the recipe servings
   model.updateServings(currentServings);
   // Render the recipe with the new values
-  recipeView.render(model.state.recipe);
+  recipeView.update(model.state.recipe);
 };
 
 const init = function () {
