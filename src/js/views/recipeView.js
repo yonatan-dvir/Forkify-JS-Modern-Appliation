@@ -13,10 +13,10 @@ class RecipeView extends View {
     ['hashchange', 'load'].forEach(ev => window.addEventListener(ev, handler));
   }
 
+  // Listen to the servings buttons clicks
   addHandlerRenderUpdateServings(handler) {
-    // Listen to the servings buttons clicks
     this._parentElement.addEventListener('click', function (e) {
-      const btn = e.target.closest('.btn--tiny');
+      const btn = e.target.closest('.btn--update-servings');
       console.log(btn);
       if (!btn) return;
 
@@ -24,6 +24,16 @@ class RecipeView extends View {
       if (updateTo > 0) {
         handler(updateTo);
       }
+    });
+  }
+
+  // Listen to the bookmark button clicks
+  addHandlerAddBookmark(handler) {
+    this._parentElement.addEventListener('click', function (e) {
+      const btn = e.target.closest('.btn--bookmark');
+      if (!btn) return;
+      console.log('ffojno');
+      handler();
     });
   }
 
@@ -62,14 +72,14 @@ class RecipeView extends View {
         <div class="recipe__info-buttons">
           <button data-servings=${
             currentServings - 1
-          } class="btn--tiny btn--increase-servings">
+          } class="btn--tiny btn--update-servings">
             <svg>
               <use href="${icons}#icon-minus-circle"></use>
             </svg>
           </button>
           <button data-servings=${
             currentServings + 1
-          } class="btn--tiny btn--increase-servings">
+          } class="btn--tiny btn--update-servings">
             <svg>
               <use href="${icons}#icon-plus-circle"></use>
             </svg>
@@ -80,9 +90,11 @@ class RecipeView extends View {
       <div class="recipe__user-generated">
         
       </div>
-      <button class="btn--round">
+      <button class="btn--round btn--bookmark">
         <svg class="">
-          <use href="${icons}#icon-bookmark-fill"></use>
+          <use href="${icons}#icon-bookmark${
+      this._data.bookmarked ? '-fill' : ''
+    }"></use>
         </svg>
       </button>
     </div>
