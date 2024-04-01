@@ -17,7 +17,6 @@ class RecipeView extends View {
   addHandlerRenderUpdateServings(handler) {
     this._parentElement.addEventListener('click', function (e) {
       const btn = e.target.closest('.btn--update-servings');
-      console.log(btn);
       if (!btn) return;
 
       const updateTo = +btn.dataset.servings;
@@ -32,7 +31,6 @@ class RecipeView extends View {
     this._parentElement.addEventListener('click', function (e) {
       const btn = e.target.closest('.btn--bookmark');
       if (!btn) return;
-      console.log('ffojno');
       handler();
     });
   }

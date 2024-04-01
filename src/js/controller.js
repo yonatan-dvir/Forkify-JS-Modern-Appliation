@@ -77,8 +77,17 @@ const controlServings = function (currentServings) {
 };
 
 const controlAddBookmark = function () {
-  // Update the recipe bookmark
-  model.addBookmark(model.state.recipe);
+  if (!model.state.recipe.bookmarked) {
+    console.log('first');
+    // Update the recipe bookmark
+    model.addBookmark(model.state.recipe);
+  } else if (model.state.recipe.bookmarked) {
+    console.log('ffffff');
+    console.log(model.state.recipe.bookmarked);
+    // Update the recipe bookmark
+    model.deleteBookmark(model.state.recipe.id);
+  }
+
   // Render the recipe with the new bookmark filled
   recipeView.update(model.state.recipe);
 };
