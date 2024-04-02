@@ -13,6 +13,7 @@ export const state = {
   bookmarks: [],
 };
 
+// Given an id, Load it's recipe data from the API
 export const loadRecipe = async function (id) {
   try {
     const data = await getJSON(`${API_URL}${id}`);
@@ -38,6 +39,7 @@ export const loadRecipe = async function (id) {
   }
 };
 
+// Load the query search result from the API
 export const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
@@ -55,6 +57,7 @@ export const loadSearchResults = async function (query) {
   }
 };
 
+// Given the page number, get the search result's array of it.
 export const getSearchResultsPage = function (pageNumber = state.page) {
   state.search.page = pageNumber;
   const start = (pageNumber - 1) * state.search.resultsPerPage;
@@ -63,6 +66,7 @@ export const getSearchResultsPage = function (pageNumber = state.page) {
   return state.search.results.slice(start, end);
 };
 
+// Update the servings number
 export const updateServings = function (newServings) {
   state.recipe.ingredients.forEach(ing => {
     ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
@@ -70,10 +74,12 @@ export const updateServings = function (newServings) {
   state.recipe.servings = newServings;
 };
 
+// Save the bookmarks array in the local storage
 const persistBookmarks = function () {
   localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
 };
 
+// Given a recipe mark it and add it to the bookmark list
 export const addBookmark = function (recipe) {
   // Add bookmark
   state.bookmarks.push(recipe);
@@ -84,6 +90,7 @@ export const addBookmark = function (recipe) {
   persistBookmarks();
 };
 
+// Given a recipe unmark it and remove it from the bookmark list
 export const deleteBookmark = function (id) {
   const index = state.bookmarks.findIndex(el => el.id === id);
   // Delete bookmark
@@ -95,11 +102,13 @@ export const deleteBookmark = function (id) {
   persistBookmarks();
 };
 
+// init the model - retrieve the bookmarks from the local storage
 const init = function () {
   const storage = localStorage.getItem('bookmarks');
   if (storage) state.bookmarks = JSON.parse(storage);
 };
 
+// Given a new recipe upload it - send it to the API
 export const uploadRecipe = async function (newRecipe) {
   try {
     const ingredients = Object.entries(newRecipe)
@@ -127,6 +136,19 @@ export const uploadRecipe = async function (newRecipe) {
     console.log(recipe);
     const data = await sendJSON(`${API_URL}?key=${KEY}`, recipe);
     console.log(data);
+    state.recipe = {
+      cookingTime: data.data.recipe.cooking_time,
+      id: data.data.recipe.id,
+      title: data.data.recipe.title,
+      publisher: data.data.recipe.publisher,
+      sourceUrl: data.data.recipe.source_url,
+      image: data.data.recipe.image_url,
+      servings: data.data.recipe.servings,
+      ingredients: data.data.recipe.ingredients,
+      key: data.data.recipe.key,
+    };
+    addBookmark(state.recipe);
+    console.log(state.recipe);
   } catch (err) {
     throw err;
   }

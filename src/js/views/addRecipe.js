@@ -7,6 +7,7 @@ class AddRecipe extends View {
   _overlay = document.querySelector('.overlay');
   _btnOpen = document.querySelector('.nav__btn--add-recipe');
   _btnClose = document.querySelector('.btn--close-modal');
+  _message = 'Recipe was successfully uploaded!';
 
   constructor() {
     super();
@@ -40,10 +41,7 @@ class AddRecipe extends View {
     });
   }
 
-  // Generate an html element of the pagination
-  _generateMarkup() {
-    return ``;
-  }
+  _generateMarkup() {}
 }
 
 export default new AddRecipe();

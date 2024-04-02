@@ -9,11 +9,16 @@ export default class View {
       return this.renderError();
     }
     this._data = data;
+    console.log('data:');
+    console.log(data);
     this._clear();
     const markup = this._generateMarkup();
+    console.log('markup');
+    console.log(markup);
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
+  // Update the
   update(data) {
     this._data = data;
 
@@ -74,7 +79,7 @@ export default class View {
     const markup = `<div class="error">
         <div>
         <svg>
-            <use href="${icons}_icon-smile"></use>
+            <use href="${icons}#icon-smile"></use>
         </svg>
         </div>
         <p>${message}</p>

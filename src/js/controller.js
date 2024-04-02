@@ -11,6 +11,7 @@ import 'regenerator-runtime/runtime';
 import { async } from 'regenerator-runtime';
 import bookmarksView from './views/bookmarksView.js';
 import addRecipe from './views/addRecipe.js';
+import { MODAL_CLOSE_SEC } from './config.js';
 
 const controlRecipes = async function () {
   try {
@@ -105,7 +106,22 @@ const controlBookmark = function () {
 
 const controlAddRecipe = async function (newRecipe) {
   try {
+    // Render the spinner while the recipe is being uploaded
+    addRecipe.renderSpinner();
+
+    //Upload the new recipe data
     await model.uploadRecipe(newRecipe);
+
+    // Render the recipe
+    recipeView.render(model.state.recipe);
+
+    // Show a success message
+    addRecipe.renderMessage();
+
+    // Close the form window
+    setTimeout(function () {
+      addRecipe.toggleWindow();
+    }, MODAL_CLOSE_SEC * 1000);
   } catch (err) {
     addRecipe.renderError(err.message);
   }
