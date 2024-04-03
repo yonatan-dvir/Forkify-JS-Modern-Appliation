@@ -1,6 +1,7 @@
 import startsWith from 'core-js/./es/string/starts-with';
 import { API_URL, RESULTS_PER_PAGE, KEY } from './config.js';
-import { getJSON, sendJSON } from './helpers.js';
+// import { getJSON, sendJSON } from './helpers.js';
+import { AJAX } from './helpers.js';
 
 export const state = {
   recipe: {},
@@ -16,7 +17,7 @@ export const state = {
 // Given an id, Load it's recipe data from the API
 export const loadRecipe = async function (id) {
   try {
-    const data = await getJSON(`${API_URL}${id}`);
+    const data = await AJAX(`${API_URL}${id}?key="${KEY}"`);
     // Create an easy-ro-read object to the recipe we got
     const { recipe } = data.data;
     state.recipe = {
@@ -28,6 +29,7 @@ export const loadRecipe = async function (id) {
       image: recipe.image_url,
       servings: recipe.servings,
       ingredients: recipe.ingredients,
+      ...(recipe.key && { key: recipe.key }),
     };
     if (state.bookmarks.some(bookmark => bookmark.id === id)) {
       state.recipe.bookmarked = true;
@@ -43,13 +45,14 @@ export const loadRecipe = async function (id) {
 export const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
-    const data = await getJSON(`${API_URL}?search=${query}`);
+    const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
     state.search.results = data.data.recipes.map(rec => {
       return {
         id: rec.id,
         title: rec.title,
         publisher: rec.publisher,
         image: rec.image_url,
+        ...(rec.key && { key: rec.key }),
       };
     });
   } catch (err) {
@@ -133,9 +136,7 @@ export const uploadRecipe = async function (newRecipe) {
       ingredients,
     };
 
-    console.log(recipe);
-    const data = await sendJSON(`${API_URL}?key=${KEY}`, recipe);
-    console.log(data);
+    const data = await AJAX(`${API_URL}?key=${KEY}`, recipe);
     state.recipe = {
       cookingTime: data.data.recipe.cooking_time,
       id: data.data.recipe.id,
@@ -148,10 +149,15 @@ export const uploadRecipe = async function (newRecipe) {
       key: data.data.recipe.key,
     };
     addBookmark(state.recipe);
-    console.log(state.recipe);
   } catch (err) {
     throw err;
   }
 };
 
+// Clear the bookmarks array
+const clearBookmarks = function () {
+  localStorage.clear('bookmarks');
+};
+
+//clearBookmarks();
 init();
